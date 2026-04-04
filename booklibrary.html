@@ -1,0 +1,55 @@
+<input id="book" placeholder="Book Name">
+<select id="category">
+  <option>Fiction</option>
+  <option>Study</option>
+</select>
+<button onclick="addBook()">Add</button>
+
+<input onkeyup="searchBook()" placeholder="Search">
+
+<div id="list"></div>
+
+<script>
+let books = JSON.parse(localStorage.getItem("books")) || [];
+
+function addBook(){
+  let name = document.getElementById("book").value;
+  let category = document.getElementById("category").value;
+
+  books.push({name, category, borrowed:false});
+  localStorage.setItem("books", JSON.stringify(books));
+
+  showBooks();
+}
+
+function showBooks(){
+  let html = "";
+  books.forEach((b,i)=>{
+    html += `<div>
+      ${b.name} (${b.category})
+      <button onclick="borrow(${i})">Borrow</button>
+    </div>`;
+  });
+  document.getElementById("list").innerHTML = html;
+}
+
+function borrow(i){
+  books[i].borrowed = true;
+  showBooks();
+}
+
+function searchBook(){
+  let val = document.querySelector("input[placeholder='Search']").value.toLowerCase();
+
+  let filtered = books.filter(b => b.name.toLowerCase().includes(val));
+
+  let html = "";
+  filtered.forEach(b=>{
+    html += `<div>${b.name}</div>`;
+  });
+
+  document.getElementById("list").innerHTML = html;
+}
+
+showBooks();
+</script>
